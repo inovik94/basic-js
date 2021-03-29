@@ -1,13 +1,13 @@
-const CustomError = require("../extensions/custom-error");
+console.log(transform([1, 2, 3, "--discard-next", 1337, "--discard-prev", 4, 5, "--discard-prev"]));
+// [1, 2, 3, 4, 5]
 
-module.exports = function transform(arr) {
+function transform(arr) {
+  let result = [];
   if (!Array.isArray(arr)) throw new Error("Error");
 
-  let result = [];
-
-  for (let i = 0; i < arr.length; i++) {
+  arr.forEach(function (e, i, arr) {
     if (arr[i] == "--discard-next") {
-      i++;
+      return i+1;
     } else if (arr[i] == "--discard-prev") {
       if (result.length !== 0 && arr[i - 2] !== "--discard-next") {
         result.pop();
@@ -21,9 +21,7 @@ module.exports = function transform(arr) {
     } else {
       result.push(arr[i]);
     }
-  }
-
-  result = result.filter((elem) => elem !== undefined);
-
+  });
+  result = result.filter((elem) => elem !== (undefined || false));
   return result;
-};
+}
